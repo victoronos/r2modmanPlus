@@ -32,19 +32,19 @@ export default class SteamGameRunner_Windows extends GameRunnerProvider {
     async start(game: Game, args: string): Promise<void | R2Error> {
         return new Promise(async (resolve, reject) => {
             const settings = await ManagerSettings.getSingleton(game);
-            const steamDir = await GameDirectoryResolverProvider.instance.getSteamDirectory();
-            if (steamDir instanceof R2Error) {
-                return resolve(steamDir);
+            const gameDir = await GameDirectoryResolverProvider.instance.getDirectory(game);
+            if (gameDir instanceof R2Error) {
+                return resolve(gameDir);
             }
 
-            LoggerProvider.instance.Log(LogSeverity.INFO, `Steam folder is: ${steamDir}`);
-            LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${steamDir}.exe -applaunch ${game.activePlatform.storeIdentifier} ${args} ${settings.getContext().gameSpecific.launchParameters}`);
+            LoggerProvider.instance.Log(LogSeverity.INFO, `Game folder is: ${gameDir}`);
+            LoggerProvider.instance.Log(LogSeverity.INFO, `Running command: ${gameDir}.exe -applaunch ${game.activePlatform.storeIdentifier} ${args} ${settings.getContext().gameSpecific.launchParameters}`);
 
-            ChildProcess.exec(`"${steamDir}/Steam.exe" -applaunch ${game.activePlatform.storeIdentifier} ${args} ${settings.getContext().gameSpecific.launchParameters}`, undefined, (err => {
+            ChildProcess.exec(`"${gameDir}/${game.exeName}" ${args} ${settings.getContext().gameSpecific.launchParameters}`, undefined, (err => {
                 if (err !== null) {
                     LoggerProvider.instance.Log(LogSeverity.ACTION_STOPPED, 'Error was thrown whilst starting modded');
                     LoggerProvider.instance.Log(LogSeverity.ERROR, err.message);
-                    const r2err = new R2Error('Error starting Steam', err.message, 'Ensure that the Steam folder has been set correctly in the settings');
+                    const r2err = new R2Error('Error starting game', err.message, 'Ensure that the game folder has been set correctly in the settings');
                     return reject(r2err);
                 }
                 return resolve();
