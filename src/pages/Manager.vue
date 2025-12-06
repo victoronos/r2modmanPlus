@@ -4,7 +4,7 @@
 			<div class='container'>
 				<p>
 					An update is available.
-					<ExternalLink :url="`https://github.com/ebkr/r2modmanPlus/releases/tag/${updateTagName}`">
+					<ExternalLink :url="`https://github.com/victoronos/r2modmanPlus/releases/tag/${updateTagName}`">
                         Click here to go to the release page.
 					</ExternalLink>
 				</p>
@@ -364,7 +364,7 @@ function isManagerUpdateAvailable() {
     if (!ManagerInformation.IS_PORTABLE) {
         return;
     }
-    fetch('https://api.github.com/repos/ebkr/r2modmanPlus/releases')
+    fetch('https://api.github.com/repos/victoronos/r2modmanPlus/releases')
         .then(response => response.json())
         .then((parsed: any) => {
             parsed.sort((a: any, b: any) => {
